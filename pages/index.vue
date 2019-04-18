@@ -1,19 +1,37 @@
 <style scoped>
+main {
+    display: flex;
+	flex-direction: column;
+	align-items: center;
+}
 .colors {
     display: flex;
+	justify-content: center;
+}
+
+textarea {
+	width: 80em;
+height: 30em;
 }
 </style>
 
 <template>
     <main>
-        <qr-code :size=320 :data=t v-for="t in text.split('\n')" :foreground=foreground :background=background />
+		<swiper :options=options style="width: 100%;">
+			<swiper-slide v-for="t in text.split('\n')" style="width: 320px">
+<p>{{ t}}</p>
+				<qr-code :size=320 :data=t :foreground=foreground :background=background />
+			</swiper-slide>
 
-        <p><textarea v-model=text /></p>
+			<div class=swiper-pagination slot=pagination />
+		</swiper>
 
         <div class=colors>
             <color-picker v-model=background />
             <color-picker v-model=foreground />
         </div>
+
+        <textarea v-model=text />
     </main>
 </template>
 
@@ -24,19 +42,34 @@ import AsyncComputed from 'vue-async-computed';
 Vue.use(AsyncComputed);
 
 import ColorPicker from '~/components/ColorPicker';
-import QRCode from '~/components/QRCode';
+import QrCode from '~/components/QRCode';
 
 
 export default {
-    components: {
-        'color-picker': ColorPicker,
-        'qr-code': QRCode,
-    },
+    components: {ColorPicker, QrCode},
     data() {
         return {
-            text: 'this is text',
+            text: 'hello world!\nthis is text',
             background: '#ffffff00',
             foreground: '#000000ff',
+			options: {
+				effect: 'coverflow',
+
+				  grabCursor: true,
+				  centeredSlides: true,
+				  slidesPerView: 'auto',
+				  coverflowEffect: {
+					rotate: 50,
+					stretch: 0,
+					depth: 100,
+					modifier: 1,
+					slideShadows : false,
+				  },
+				  pagination: {
+					el: '.swiper-pagination',
+				  },
+					mousewheel: true,
+			},
         };
     },
 };
