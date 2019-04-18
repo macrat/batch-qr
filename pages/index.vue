@@ -36,11 +36,6 @@ height: 30em;
 </template>
 
 <script>
-import Vue from 'vue';
-import AsyncComputed from 'vue-async-computed';
-
-Vue.use(AsyncComputed);
-
 import ColorPicker from '~/components/ColorPicker';
 import QrCode from '~/components/QRCode';
 
