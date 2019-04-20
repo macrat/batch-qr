@@ -123,18 +123,28 @@ import QrDownloader from '~/components/QRDownloader';
 export default {
 	components: {ColorPicker, QrThumbnails, QrDownloader},
 
+	validate({query}) {
+		return (
+			(!query.mode || /^(line-as-qr|single-qr)$/.test(query.mode))
+			&& (!query.background || /^#[0-9a-fA-F]{8}$/.test(query.background))
+			&& (!query.foreground || /^#[0-9a-fA-F]{8}$/.test(query.foreground))
+			&& (!query.margin || /^[0-9]+$/.test(query.margin))
+			&& (!query.errorlevel || /^(Low|Medium|Quartile|High)$/.test(query.errorlevel))
+		);
+	},
+
 	data() {
 		return {
-			text: 'hello world!\nthis is text',
+			text: this.$route.query.text || 'hello world!\nthis is text',
 			options: {
 				color: {
-					light: '#BC67D0FF',
-					dark: '#F4F6F9FF',
+					light: this.$route.query.background || '#BC67D0FF',
+					dark: this.$route.query.foreground || '#F4F6F9FF',
 				},
-				margin: 1,
-				errorCorrectionLevel: 'Medium',
+				margin: this.$route.query.margin ? parseInt(this.$route.query.margin) : 1,
+				errorCorrectionLevel: this.$route.query.errorlevel || 'Medium',
 			},
-			lineAsQR: true,
+			lineAsQR: this.$route.query !== 'single-qr',
 		};
 	},
 
@@ -167,6 +177,53 @@ export default {
 				return await this.downloadAll();
 			}
 		},
+		updateURL() {
+			const query = new URLSearchParams();
+			query.append('background', this.options.color.light);
+			query.append('foreground', this.options.color.dark);
+			query.append('margin', this.options.margin);
+			query.append('errorlevel', this.options.errorCorrectionLevel);
+			query.append('mode', this.lineAsQR ? 'line-as-qr' : 'single-qr');
+			query.append('text', this.text);
+
+			if (query.toString() !== new URLSearchParams(location.search).toString()) {
+				if (history.state !== 'batch-qr') {
+					history.pushState('batch-qr', null, '/?' + query);
+				} else {
+					history.replaceState('batch-qr', null, '/?' + query);
+				}
+			}
+		},
+	},
+
+	watch: {
+		text() {
+			this.updateURL();
+		},
+		options: {
+			handler() {
+				this.updateURL();
+			},
+			deep: true,
+		},
+		lineAsQR() {
+			this.updateURL();
+		},
+	},
+
+	mounted() {
+		window.addEventListener('popstate', () => {
+			this.text = this.$route.query.text || 'hello world!\nthis is text';
+			this.options = {
+				color: {
+					light: this.$route.query.background || '#BC67D0FF',
+					dark: this.$route.query.foreground || '#F4F6F9FF',
+				},
+				margin: this.$route.query.margin ? parseInt(this.$route.query.margin) : 1,
+				errorCorrectionLevel: this.$route.query.errorlevel || 'Medium',
+			};
+			this.lineAsQR = this.$route.query !== 'single-qr';
+		});
 	},
 };
 </script>
