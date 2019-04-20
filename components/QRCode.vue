@@ -1,9 +1,35 @@
+<style scoped>
+div > div {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
+i {
+	display: block;
+	font-size: 36px;
+}
+</style>
+
 <template>
-    <img :width=size :height=size :src=url />
+	<div :style="{width: size + 'px', height: size + 'px'}">
+		<img :width=size :height=size :src=url v-if=url />
+		<div v-else-if=empty :style="{backgroundColor: mergedOptions.color.light}" />
+		<div v-else :style="{backgroundColor: mergedOptions.color.light}">
+			<i class="el-icon-loading" :style="{color: mergedOptions.color.dark}" />
+		</div>
+	</div>
 </template>
 
 <script>
+import Vue from 'vue';
 import QRCode from 'qrcode';
+
+
+async function tick() {
+	await new Promise((resolve, reject) => Vue.nextTick(resolve));
+}
 
 
 export default {
@@ -36,12 +62,36 @@ export default {
 			return op;
 		},
 	},
-    asyncComputed: {
-        async url() {
-            if (!this.data) return this.fallback;
 
-            return await QRCode.toDataURL(this.data, this.mergedOptions);
+	data() {
+		return {
+			url: this.fallback,
+			empty: false,
+		};
+	},
+
+	methods: {
+        async updateURL() {
+            if (!this.data) {
+				this.url = this.fallback;
+				if (!this.fallback) this.empty = true;
+				return;
+			}
+
+			this.url = null;
+			this.empty = false;
+			await tick();
+
+            this.url = await QRCode.toDataURL(this.data, this.mergedOptions);
         },
     },
+	watch: {
+		async data() {
+			await this.updateURL();
+		},
+	},
+	mounted() {
+		tick().then(() => this.updateURL());
+	},
 };
 </script>

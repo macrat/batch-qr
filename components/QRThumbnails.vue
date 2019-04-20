@@ -5,13 +5,15 @@
 </style>
 
 <template>
-	<swiper ref=swiper :options=swiperOptions style="width: 100%">
-		<swiper-slide v-for="x in data" style="width: 320px">
-			<qr-code :size=320 :data=x :options=options />
-		</swiper-slide>
+	<div ref=swiper v-swiper:thumbnails=swiperOptions style="width: 100%">
+		<div class=swiper-wrapper>
+			<div class=swiper-slide v-for="x in data" :key=x style="width: 320px">
+				<qr-code :size=320 :data=x :options=options />
+			</div>
+		</div>
 
-		<div class=swiper-pagination slot=pagination />
-	</swiper>
+		<div class="swiper-pagination swiper-pagination-bullets" />
+	</div>
 </template>
 
 <script>
