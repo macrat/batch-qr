@@ -144,7 +144,7 @@ export default {
 				margin: this.$route.query.margin ? parseInt(this.$route.query.margin) : 1,
 				errorCorrectionLevel: this.$route.query.errorlevel || 'Medium',
 			},
-			lineAsQR: this.$route.query !== 'single-qr',
+			lineAsQR: this.$route.query.mode !== 'single-qr',
 		};
 	},
 
@@ -222,7 +222,7 @@ export default {
 				margin: this.$route.query.margin ? parseInt(this.$route.query.margin) : 1,
 				errorCorrectionLevel: this.$route.query.errorlevel || 'Medium',
 			};
-			this.lineAsQR = this.$route.query !== 'single-qr';
+			this.lineAsQR = this.$route.query.mode !== 'single-qr';
 		});
 	},
 };
