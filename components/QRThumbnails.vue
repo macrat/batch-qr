@@ -1,6 +1,6 @@
 <style>
 .swiper-pagination-bullet-active {
-	background-color: #ef9a9a;
+	background-color: #592266;
 }
 </style>
 

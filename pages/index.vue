@@ -1,72 +1,110 @@
 <style>
 body {
 	margin: 0;
-	background-color: lightgray;
 }
 </style>
 
 <style scoped>
+header {
+	background-color: #E9E9E9;
+	display: flex;
+	justify-content: center;
+}
+header > div {
+	width: 1200px;
+	max-width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+header a {
+	color: #606060;
+	text-decoration: none;
+}
+header h1 {
+	display: inline-block;
+	font-size: 20px;
+}
+
 main {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	background-color: #D6D6D6;
+}
+main > * {
+	width: 1200px;
+	max-width: 100%;
 }
 
+.controls {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+.controls > :last-child {
+	position: absolute;
+	right: 0;
+}
 .options {
 	display: flex;
 	justify-content: center;
+	align-items: center;
+	margin: auto;
 }
-.options > div {
+.options > * {
 	margin: 12px;
-}
-.options > div > span, .options > div > label, .options > div > label > span {
-	display: block;
-	text-align: center;
-}
-
-textarea {
-	width: 80em;
-	max-width: 95%;
-	height: 30em;
-	border: 1px solid #ef9a9a;
-	border-radius: 6px;
-	padding: 6px;
 }
 </style>
 
 <template>
-	<main>
-		<qr-thumbnails :data="text.split('\n')" :options=options />
-
-		<div class=options>
+	<el-container>
+		<el-header>
 			<div>
-				<span>background</span>
-				<color-picker v-model=options.color.light />
-			</div>
-			<div>
-				<span>foreground</span>
-				<color-picker v-model=options.color.dark />
-			</div>
-			<div>
-				<label>
-					<span>margin</span>
-					<input v-model=options.margin type=range min=0 max=12>
-				</label>
+				<a href="https://macrat.github.io/batch-qr"><h1>BatchQR</h1></a>
 
-				<label>
-					<span>error correction level</span>
-					<select v-model=options.errorCorrectionLevel>
-						<option>H</option>
-						<option>Q</option>
-						<option>M</option>
-						<option>L</option>
-					</select>
-				</label>
+				<a href="https://github.com/macrat/batch-qr"><img src="~assets/github.svg" width=32px height=32px></a>
 			</div>
-		</div>
+		</el-header>
 
-		<textarea v-model=text />
-	</main>
+		<el-main>
+			<qr-thumbnails :data="text.split('\n')" :options=options />
+
+			<div class=controls>
+				<div class=options>
+					<color-picker label="background color" v-model=options.color.light clear-color=#FFFFFF00 />
+
+					<color-picker label="foreground color" v-model=options.color.dark clear-color=#000000FF />
+
+					<el-slider
+						v-model=options.margin
+						:min=0
+						:max=12
+						:format-tooltip="x => `margin: ${x}`"
+						style="width: 160px" />
+
+					<el-tooltip content="error correction level">
+						<el-select v-model=options.errorCorrectionLevel style="width: 8em">
+							<el-option value=High />
+							<el-option value=Quartile />
+							<el-option value=Medium />
+							<el-option value=Low />
+						</el-select>
+					</el-tooltip>
+				</div>
+
+				<el-dropdown split-button type=primary>
+					Download
+					<el-dropdown-menu slot=dropdown>
+						<el-dropdown-item>Download It</el-dropdown-item>
+						<el-dropdown-item>Download All</el-dropdown-item>
+					</el-dropdown-menu>
+				</el-dropdown>
+			</div>
+
+			<el-input v-model=text type=textarea :autosize="{minRows: 10}" />
+		</el-main>
+	</el-container>
 </template>
 
 <script>
@@ -82,11 +120,11 @@ export default {
 			text: 'hello world!\nthis is text',
 			options: {
 				color: {
-					light: '#ffffff00',
-					dark: '#000000ff',
+					light: '#BC67D0FF',
+					dark: '#F4F6F9FF',
 				},
 				margin: 1,
-				errorCorrectionLevel: 'M',
+				errorCorrectionLevel: 'Medium',
 			},
 		};
 	},
