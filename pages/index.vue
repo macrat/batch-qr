@@ -1,6 +1,7 @@
 <style>
-body {
+html, body {
 	margin: 0;
+	background-color: #D6D6D6;
 }
 </style>
 
@@ -30,7 +31,6 @@ main {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	background-color: #D6D6D6;
 }
 main > * {
 	width: 1200px;
@@ -40,20 +40,20 @@ main > * {
 .controls {
 	position: relative;
 	display: flex;
-	align-items: center;
-}
-.controls > :last-child {
-	position: absolute;
-	right: 0;
-}
-.options {
-	display: flex;
+	flex-wrap: wrap;
 	justify-content: center;
 	align-items: center;
 	margin: auto;
 }
-.options > * {
+.controls > * {
 	margin: 12px;
+}
+@media (min-width:800px) {
+	.controls > :last-child {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
 }
 </style>
 
@@ -71,27 +71,25 @@ main > * {
 			<qr-thumbnails :data="text.split('\n')" :options=options />
 
 			<div class=controls>
-				<div class=options>
-					<color-picker label="background color" v-model=options.color.light clear-color=#FFFFFF00 />
+				<color-picker label="background color" v-model=options.color.light clear-color=#FFFFFF00 />
 
-					<color-picker label="foreground color" v-model=options.color.dark clear-color=#000000FF />
+				<color-picker label="foreground color" v-model=options.color.dark clear-color=#000000FF />
 
-					<el-slider
-						v-model=options.margin
-						:min=0
-						:max=12
-						:format-tooltip="x => `margin: ${x}`"
-						style="width: 160px" />
+				<el-slider
+					v-model=options.margin
+					:min=0
+					:max=12
+					:format-tooltip="x => `margin: ${x}`"
+					style="width: 160px" />
 
-					<el-tooltip content="error correction level">
-						<el-select v-model=options.errorCorrectionLevel style="width: 8em">
-							<el-option value=High />
-							<el-option value=Quartile />
-							<el-option value=Medium />
-							<el-option value=Low />
-						</el-select>
-					</el-tooltip>
-				</div>
+				<el-tooltip content="error correction level">
+					<el-select v-model=options.errorCorrectionLevel style="width: 8em">
+						<el-option value=High />
+						<el-option value=Quartile />
+						<el-option value=Medium />
+						<el-option value=Low />
+					</el-select>
+				</el-tooltip>
 
 				<el-dropdown split-button type=primary>
 					Download
