@@ -48,7 +48,7 @@ main > * {
 .controls > * {
 	margin: 12px;
 }
-@media (min-width:800px) {
+@media (min-width:1000px) {
 	.controls > :last-child {
 		position: absolute;
 		top: 0;
@@ -91,13 +91,16 @@ main > * {
 					</el-select>
 				</el-tooltip>
 
-				<el-dropdown split-button type=primary @click=downloadAll @command=handleDownloadCommand>
+				<el-switch v-model=lineAsQR active-text="line as QR" inactive-text="single QR" />
+
+				<el-dropdown split-button type=primary @click=downloadAll @command=handleDownloadCommand v-if=lineAsQR>
 					Download
 					<el-dropdown-menu slot=dropdown>
 						<el-dropdown-item command=it>Download It</el-dropdown-item>
 						<el-dropdown-item command=all>Download All</el-dropdown-item>
 					</el-dropdown-menu>
 				</el-dropdown>
+				<el-button type=primary v-else @click=downloadSingle>Download</el-button>
 			</div>
 
 			<el-input v-model=text type=textarea :autosize="{minRows: 10}" />
@@ -127,12 +130,17 @@ export default {
 				margin: 1,
 				errorCorrectionLevel: 'Medium',
 			},
+			lineAsQR: true,
 		};
 	},
 
 	computed: {
 		data() {
-			return this.text.split('\n');
+			if (this.lineAsQR) {
+				return this.text.split('\n');
+			} else {
+				return [this.text];
+			}
 		},
 	},
 
@@ -140,6 +148,9 @@ export default {
 		async downloadIt() {
 			const current = this.$refs.thumbnails.current;
 			this.$refs.downloader.downloadIt(this.data[current], current, this.options);
+		},
+		async downloadSingle() {
+			this.$refs.downloader.downloadIt(this.text, 'batch-qr', this.options);
 		},
 		async downloadAll() {
 			this.$refs.downloader.downloadAll(this.data, this.options);

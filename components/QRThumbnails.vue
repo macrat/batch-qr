@@ -12,7 +12,7 @@
 			</div>
 		</div>
 
-		<div class="swiper-pagination swiper-pagination-bullets" />
+		<div class="swiper-pagination swiper-pagination-bullets" v-show="data.length > 1" />
 	</div>
 </template>
 
