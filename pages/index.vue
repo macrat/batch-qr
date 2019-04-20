@@ -63,7 +63,9 @@ main > * {
 			<div>
 				<a href="https://macrat.github.io/batch-qr"><h1>BatchQR</h1></a>
 
-				<a href="https://github.com/macrat/batch-qr"><img src="~assets/github.svg" width=32px height=32px></a>
+				<el-tooltip content="open repository">
+					<a href="https://github.com/macrat/batch-qr"><img src="~assets/github.svg" width=32px height=32px></a>
+				</el-tooltip>
 			</div>
 		</el-header>
 
@@ -91,7 +93,9 @@ main > * {
 					</el-select>
 				</el-tooltip>
 
-				<el-switch v-model=lineAsQR active-text="line as QR" inactive-text="single QR" />
+				<el-tooltip content="convert mode">
+					<el-switch v-model=lineAsQR active-text="line as QR" inactive-text="single QR" />
+				</el-tooltip>
 
 				<el-dropdown split-button type=primary @click=downloadAll @command=handleDownloadCommand v-if=lineAsQR>
 					Download
