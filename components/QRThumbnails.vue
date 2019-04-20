@@ -5,7 +5,7 @@
 </style>
 
 <template>
-	<swiper :options=swiperOptions style="width: 100%;">
+	<swiper ref=swiper :options=swiperOptions style="width: 100%">
 		<swiper-slide v-for="x in data" style="width: 320px">
 			<qr-code :size=320 :data=x :options=options />
 		</swiper-slide>
@@ -44,6 +44,17 @@ export default {
 				mousewheel: true,
 			},
 		};
+	},
+
+	computed: {
+		current: {
+			get() {
+				return this.$refs.swiper.swiper.activeIndex;
+			},
+			set(x) {
+				this.$refs.swiper.swiper.activeIndex = x;
+			},
+		},
 	},
 };
 </script>

@@ -68,7 +68,7 @@ main > * {
 		</el-header>
 
 		<el-main>
-			<qr-thumbnails :data="text.split('\n')" :options=options />
+			<qr-thumbnails ref=thumbnails :data=data :options=options />
 
 			<div class=controls>
 				<color-picker label="background color" v-model=options.color.light clear-color=#FFFFFF00 />
@@ -91,27 +91,30 @@ main > * {
 					</el-select>
 				</el-tooltip>
 
-				<el-dropdown split-button type=primary>
+				<el-dropdown split-button type=primary @click=downloadAll @command=handleDownloadCommand>
 					Download
 					<el-dropdown-menu slot=dropdown>
-						<el-dropdown-item>Download It</el-dropdown-item>
-						<el-dropdown-item>Download All</el-dropdown-item>
+						<el-dropdown-item command=it>Download It</el-dropdown-item>
+						<el-dropdown-item command=all>Download All</el-dropdown-item>
 					</el-dropdown-menu>
 				</el-dropdown>
 			</div>
 
 			<el-input v-model=text type=textarea :autosize="{minRows: 10}" />
 		</el-main>
+
+		<qr-downloader ref=downloader />
 	</el-container>
 </template>
 
 <script>
 import ColorPicker from '~/components/ColorPicker';
 import QrThumbnails from '~/components/QRThumbnails';
+import QrDownloader from '~/components/QRDownloader';
 
 
 export default {
-	components: {ColorPicker, QrThumbnails},
+	components: {ColorPicker, QrThumbnails, QrDownloader},
 
 	data() {
 		return {
@@ -125,6 +128,30 @@ export default {
 				errorCorrectionLevel: 'Medium',
 			},
 		};
+	},
+
+	computed: {
+		data() {
+			return this.text.split('\n');
+		},
+	},
+
+	methods: {
+		async downloadIt() {
+			const current = this.$refs.thumbnails.current;
+			this.$refs.downloader.downloadIt(this.data[current], current, this.options);
+		},
+		async downloadAll() {
+			this.$refs.downloader.downloadAll(this.data, this.options);
+		},
+		async handleDownloadCommand(command) {
+			switch (command) {
+			case 'it':
+				return await this.downloadIt();
+			case 'all':
+				return await this.downloadAll();
+			}
+		},
 	},
 };
 </script>
