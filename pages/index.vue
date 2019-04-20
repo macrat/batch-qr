@@ -3,10 +3,6 @@ body {
 	margin: 0;
 	background-color: lightgray;
 }
-
-.swiper-pagination-bullet-active {
-	background-color: #ef9a9a;
-}
 </style>
 
 <style scoped>
@@ -40,32 +36,26 @@ textarea {
 
 <template>
 	<main>
-		<swiper :options=options style="width: 100%;">
-			<swiper-slide v-for="t in text.split('\n')" style="width: 320px">
-				<qr-code :size=320 :data=t :foreground=foreground :background=background :options="{margin: margin, errorCorrectionLevel:errorCorrectionLevel}" />
-			</swiper-slide>
-
-			<div class=swiper-pagination slot=pagination />
-		</swiper>
+		<qr-thumbnails :data="text.split('\n')" :options=options />
 
 		<div class=options>
 			<div>
 				<span>background</span>
-				<color-picker v-model=background />
+				<color-picker v-model=options.color.light />
 			</div>
 			<div>
 				<span>foreground</span>
-				<color-picker v-model=foreground />
+				<color-picker v-model=options.color.dark />
 			</div>
 			<div>
 				<label>
 					<span>margin</span>
-					<input v-model=margin type=range min=0 max=12>
+					<input v-model=options.margin type=range min=0 max=12>
 				</label>
 
 				<label>
 					<span>error correction level</span>
-					<select v-model=errorCorrectionLevel>
+					<select v-model=options.errorCorrectionLevel>
 						<option>H</option>
 						<option>Q</option>
 						<option>M</option>
@@ -81,36 +71,23 @@ textarea {
 
 <script>
 import ColorPicker from '~/components/ColorPicker';
-import QrCode from '~/components/QRCode';
+import QrThumbnails from '~/components/QRThumbnails';
 
 
 export default {
-	components: {ColorPicker, QrCode},
+	components: {ColorPicker, QrThumbnails},
+
 	data() {
 		return {
 			text: 'hello world!\nthis is text',
-			background: '#ffffff00',
-			foreground: '#000000ff',
 			options: {
-				effect: 'coverflow',
-
-				grabCursor: true,
-				centeredSlides: true,
-				slidesPerView: 'auto',
-				coverflowEffect: {
-					rotate: 50,
-					stretch: 0,
-					depth: 100,
-					modifier: 1,
-					slideShadows : false,
+				color: {
+					light: '#ffffff00',
+					dark: '#000000ff',
 				},
-				pagination: {
-					el: '.swiper-pagination',
-				},
-				mousewheel: true,
+				margin: 1,
+				errorCorrectionLevel: 'M',
 			},
-			margin: 1,
-			errorCorrectionLevel: 'M',
 		};
 	},
 };

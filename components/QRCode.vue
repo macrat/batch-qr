@@ -27,19 +27,20 @@ export default {
         background: String,
     },
 
+	computed: {
+		mergedOptions() {
+			const op = Object.assign({}, this.options);
+			op.color = op.color || {};
+			op.color.light = this.background || op.color.light;
+			op.color.dark = this.foreground || op.color.dark;
+			return op;
+		},
+	},
     asyncComputed: {
         async url() {
             if (!this.data) return this.fallback;
 
-            return await QRCode.toDataURL(this.data, Object.assign(
-                this.options,
-                {
-                    color: {
-                        light: this.background,
-                        dark: this.foreground,
-                    },
-                },
-            ));
+            return await QRCode.toDataURL(this.data, this.mergedOptions);
         },
     },
 };
