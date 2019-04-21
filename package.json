@@ -8,7 +8,7 @@
     "build": "npx nuxt build",
     "start": "npx nuxt start --hostname 0.0.0.0",
     "generate": "npx cross-env NODE_ENV=production DEPLOY_ENV=GH_PAGES nuxt generate",
-    "deploy": "npx push-dir --dir=dist --branch=gh-pages --cleanup",
+    "deploy": "npx push-dir --dir=dist --branch=gh-pages",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
