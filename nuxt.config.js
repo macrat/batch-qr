@@ -12,5 +12,6 @@ export default {
 		{src: '~plugins/vue-async-computed'},
 		{src: '~plugins/vue-awesome-swiper', ssr: false},
 		{src: '~plugins/element-ui'},
+		{src: '~plugins/codemirror', ssr: false},
 	],
 };

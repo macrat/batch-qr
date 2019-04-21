@@ -3,6 +3,9 @@ html, body {
 	margin: 0;
 	background-color: #D6D6D6;
 }
+html, input, textarea, select, button, meter, progress {
+	font-family: roboto, sans-serif;
+}
 </style>
 
 <style scoped>
@@ -70,7 +73,13 @@ main > * {
 		</el-header>
 
 		<el-main>
-			<qr-thumbnails ref=thumbnails :data=data :options=options />
+			<qr-thumbnails
+				ref=thumbnails
+				:data=data
+				:options=options
+				:current=viewLine
+				@update:current="lineAsQR ? (viewLine = editLine = $event) : (viewLine = $event)"
+				/>
 
 			<div class=controls>
 				<color-picker label="background color" v-model=options.color.light clear-color=#FFFFFF00 />
@@ -107,7 +116,11 @@ main > * {
 				<el-button type=primary v-else @click=downloadSingle>Download</el-button>
 			</div>
 
-			<el-input v-model=text type=textarea :autosize="{minRows: 10}" />
+			<TextEditor
+				v-model=text
+				:line=editLine
+				@update:line="lineAsQR ? (editLine = viewLine = $event) : (editLine = $event)"
+				:mode="lineAsQR ? 'lineasqr' : 'singleqr'" />
 		</el-main>
 
 		<qr-downloader ref=downloader />
@@ -118,10 +131,11 @@ main > * {
 import ColorPicker from '~/components/ColorPicker';
 import QrThumbnails from '~/components/QRThumbnails';
 import QrDownloader from '~/components/QRDownloader';
+import TextEditor from '~/components/TextEditor';
 
 
 export default {
-	components: {ColorPicker, QrThumbnails, QrDownloader},
+	components: {ColorPicker, QrThumbnails, QrDownloader, TextEditor},
 
 	validate({query}) {
 		return (
@@ -145,6 +159,8 @@ export default {
 				errorCorrectionLevel: this.$route.query.errorlevel || 'Medium',
 			},
 			lineAsQR: this.$route.query.mode !== 'single-qr',
+			editLine: 1,
+			viewLine: 1,
 		};
 	},
 
@@ -161,7 +177,7 @@ export default {
 	methods: {
 		async downloadIt() {
 			const current = this.$refs.thumbnails.current;
-			this.$refs.downloader.downloadIt(this.data[current], current, this.options);
+			this.$refs.downloader.downloadIt(this.data[current], `${current + 1}`, this.options);
 		},
 		async downloadSingle() {
 			this.$refs.downloader.downloadIt(this.text, 'batch-qr', this.options);

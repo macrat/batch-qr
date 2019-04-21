@@ -5,7 +5,11 @@
 </style>
 
 <template>
-	<div ref=swiper v-swiper:thumbnails=swiperOptions style="width: 100%">
+	<div
+		ref=swiper
+		v-swiper:thumbnails=swiperOptions
+		@slideChange="$emit('update:current', $refs.swiper.swiper.activeIndex)"
+		style="width: 100%">
 		<div class=swiper-wrapper>
 			<div class=swiper-slide v-for="x in data" :key=x style="width: 320px">
 				<qr-code :size=320 :data=x :options=options />
@@ -21,7 +25,7 @@ import QrCode from '~/components/QRCode';
 
 
 export default {
-	props: ['data', 'options'],
+	props: ['data', 'options', 'current'],
 
 	components: {QrCode},
 
@@ -48,14 +52,9 @@ export default {
 		};
 	},
 
-	computed: {
-		current: {
-			get() {
-				return this.$refs.swiper.swiper.activeIndex;
-			},
-			set(x) {
-				this.$refs.swiper.swiper.activeIndex = x;
-			},
+	watch: {
+		current(val) {
+			this.$refs.swiper.swiper.slideTo(val);
 		},
 	},
 };

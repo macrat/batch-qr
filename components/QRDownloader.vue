@@ -54,7 +54,7 @@ export async function allQRToDataURL(data, margin, background, foreground, callb
 		try {
 			const url = await oneQRToDataURL(data[i], margin, background, foreground);
 
-			zip.file(`batch-qr/${i}.png`, url.replace(/.*?,/, ''), {base64: true, comment: data[i]});
+			zip.file(`batch-qr/${i + 1}.png`, url.replace(/.*?,/, ''), {base64: true, comment: data[i]});
 		} catch {
 		}
 	}
