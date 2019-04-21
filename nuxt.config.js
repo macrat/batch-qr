@@ -1,3 +1,7 @@
+const router = process.env.DEPLOY_ENV !== 'GH_PAGES' ? {} : {
+	base: '/batch-qr/',
+};
+
 export default {
 	head: {
 		title: 'BatchQR',
@@ -15,4 +19,5 @@ export default {
 		{src: '~plugins/element-ui'},
 		{src: '~plugins/codemirror', ssr: false},
 	],
+	router: router,
 };
