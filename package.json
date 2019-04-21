@@ -19,6 +19,7 @@
   "homepage": "https://github.com/macrat/qr-batch-generator#readme",
   "dependencies": {
     "element-ui": "^2.7.2",
+    "js-base64": "^2.5.1",
     "jszip": "^3.2.1",
     "node-sass": "^4.11.0",
     "nuxt": "^2.6.2",

@@ -25,6 +25,7 @@ div {
 import Vue from 'vue';
 import QRCode from 'qrcode';
 import JSZip from 'jszip';
+import {Base64} from 'js-base64';
 
 
 async function tick() {
@@ -32,19 +33,28 @@ async function tick() {
 }
 
 
-export async function oneQRToDataURL(data, margin, background, foreground) {
-	return await QRCode.toDataURL(data, {
+async function oneQRToDataURL(data, type, margin, background, foreground) {
+	const options = {
 		color: {
 			light: background,
 			dark: foreground,
 		},
 		margin: margin,
 		scale: 8,
-	});
+	};
+
+	switch (type) {
+	case 'png':
+		return await QRCode.toDataURL(data, Object.assign(options, {type: 'image/png'}));
+	case 'svg':
+		return 'data:image/svg+xml;base64,' + Base64.encode(await QRCode.toString(data, Object.assign(options, {type: 'image/svg'})));
+	default:
+		throw new ValueError(`unknown type: ${type}`);
+	}
 }
 
 
-export async function allQRToDataURL(data, margin, background, foreground, callback) {
+async function allQRToDataURL(data, type, margin, background, foreground, callback) {
 	const zip = new JSZip();
 
 	zip.file('batch-qr', '', {dir: true});
@@ -52,9 +62,9 @@ export async function allQRToDataURL(data, margin, background, foreground, callb
 	for (let i=0; i<data.length; i++) {
 		callback(i/data.length * 50, 'generating');
 		try {
-			const url = await oneQRToDataURL(data[i], margin, background, foreground);
+			const url = await oneQRToDataURL(data[i], type, margin, background, foreground);
 
-			zip.file(`batch-qr/${i + 1}.png`, url.replace(/.*?,/, ''), {base64: true, comment: data[i]});
+			zip.file(`batch-qr/${i + 1}.${type}`, url.replace(/.*?,/, ''), {base64: true, comment: data[i]});
 		} catch {
 		}
 	}
@@ -102,11 +112,12 @@ export default {
 
 			this.shown = false;
 		},
-		async downloadIt(data, name, options) {
-			await this._prepare(name, 'image/png');
+		async downloadIt(data, type, name, options) {
+			await this._prepare(name, type === 'svg' ? 'image/svg+xml' : 'image/png');
 
 			this.url = await oneQRToDataURL(
 				data,
+				type,
 				options.margin,
 				options.color.light,
 				options.color.dark,
@@ -114,11 +125,12 @@ export default {
 
 			await this._download();
 		},
-		async downloadAll(data, options) {
+		async downloadAll(data, type, options) {
 			await this._prepare('batch-qr', 'application/zip');
 
 			this.url = await allQRToDataURL(
 				data,
+				type,
 				options.margin,
 				options.color.light,
 				options.color.dark,

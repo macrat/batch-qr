@@ -113,14 +113,22 @@ main {
 						<el-switch v-model=lineAsQR active-text="line as QR" inactive-text="single QR" />
 					</el-tooltip>
 
-					<el-dropdown split-button type=primary @click=downloadAll @command=handleDownloadCommand v-if=lineAsQR>
+					<el-dropdown split-button type=primary @click="downloadAll('png')" @command=handleDownloadCommand v-if=lineAsQR>
 						Download
 						<el-dropdown-menu slot=dropdown>
-							<el-dropdown-item command=it>Download It</el-dropdown-item>
-							<el-dropdown-item command=all>Download All</el-dropdown-item>
+							<el-dropdown-item command=it:svg>Download It as SVG</el-dropdown-item>
+							<el-dropdown-item command=it:png>Download It as PNG</el-dropdown-item>
+							<el-dropdown-item command=all:svg>Download All as SVG</el-dropdown-item>
+							<el-dropdown-item command=all:png>Download All as PNG</el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
-					<el-button type=primary v-else @click=downloadSingle>Download</el-button>
+					<el-dropdown split-button type=primary @click="downloadSingle('png')" @command=handleDownloadCommand v-else>
+						Download
+						<el-dropdown-menu slot=dropdown>
+							<el-dropdown-item command="single:png">Download as PNG</el-dropdown-item>
+							<el-dropdown-item command="single:svg">Download as SVG</el-dropdown-item>
+						</el-dropdown-menu>
+					</el-dropdown>
 				</div>
 
 				<TextEditor
@@ -185,22 +193,26 @@ export default {
 	},
 
 	methods: {
-		async downloadIt() {
+		async downloadSingle(type) {
+			this.$refs.downloader.downloadIt(this.text, type, 'batch-qr', this.options);
+		},
+		async downloadIt(type) {
 			const current = this.$refs.thumbnails.current;
-			this.$refs.downloader.downloadIt(this.data[current], `${current + 1}`, this.options);
+			this.$refs.downloader.downloadIt(this.data[current], type, `${current + 1}`, this.options);
 		},
-		async downloadSingle() {
-			this.$refs.downloader.downloadIt(this.text, 'batch-qr', this.options);
-		},
-		async downloadAll() {
-			this.$refs.downloader.downloadAll(this.data, this.options);
+		async downloadAll(type) {
+			this.$refs.downloader.downloadAll(this.data, type, this.options);
 		},
 		async handleDownloadCommand(command) {
-			switch (command) {
+			const m = command.match(/(.*):(.*)/);
+
+			switch (m[1]) {
+			case 'single':
+				return await this.downloadSingle(m[2]);
 			case 'it':
-				return await this.downloadIt();
+				return await this.downloadIt(m[2]);
 			case 'all':
-				return await this.downloadAll();
+				return await this.downloadAll(m[2]);
 			}
 		},
 		updateURL() {
