@@ -31,11 +31,16 @@ header h1 {
 }
 
 main {
+	padding: 30px 0;
+}
+.edit-area {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	padding: 0 20px;
+	margin-top: 14px;
 }
-main > * {
+.edit-area > * {
 	width: 1200px;
 	max-width: 100%;
 }
@@ -78,49 +83,52 @@ main > * {
 				:data=data
 				:options=options
 				:current=viewLine
-				@update:current="lineAsQR ? (viewLine = editLine = $event) : (viewLine = $event)"
-				/>
+				@update:current="lineAsQR ? (viewLine = editLine = $event) : (viewLine = $event)" />
 
-			<div class=controls>
-				<color-picker label="background color" v-model=options.color.light clear-color=#FFFFFF00 />
+			<div class=edit-area>
+				<div class=controls>
+					<div>
+						<color-picker label="background color" v-model=options.color.light clear-color=#FFFFFF00 />
 
-				<color-picker label="foreground color" v-model=options.color.dark clear-color=#000000FF />
+						<color-picker label="foreground color" v-model=options.color.dark clear-color=#000000FF />
+					</div>
 
-				<el-slider
-					v-model=options.margin
-					:min=0
-					:max=12
-					:format-tooltip="x => `margin: ${x}`"
-					style="width: 160px" />
+					<el-slider
+						v-model=options.margin
+						:min=0
+						:max=12
+						:format-tooltip="x => `margin: ${x}`"
+						style="width: 160px" />
 
-				<el-tooltip content="error correction level">
-					<el-select v-model=options.errorCorrectionLevel style="width: 8em">
-						<el-option value=High />
-						<el-option value=Quartile />
-						<el-option value=Medium />
-						<el-option value=Low />
-					</el-select>
-				</el-tooltip>
+					<el-tooltip content="error correction level">
+						<el-select v-model=options.errorCorrectionLevel style="width: 8em">
+							<el-option value=High />
+							<el-option value=Quartile />
+							<el-option value=Medium />
+							<el-option value=Low />
+						</el-select>
+					</el-tooltip>
 
-				<el-tooltip content="convert mode">
-					<el-switch v-model=lineAsQR active-text="line as QR" inactive-text="single QR" />
-				</el-tooltip>
+					<el-tooltip content="convert mode">
+						<el-switch v-model=lineAsQR active-text="line as QR" inactive-text="single QR" />
+					</el-tooltip>
 
-				<el-dropdown split-button type=primary @click=downloadAll @command=handleDownloadCommand v-if=lineAsQR>
-					Download
-					<el-dropdown-menu slot=dropdown>
-						<el-dropdown-item command=it>Download It</el-dropdown-item>
-						<el-dropdown-item command=all>Download All</el-dropdown-item>
-					</el-dropdown-menu>
-				</el-dropdown>
-				<el-button type=primary v-else @click=downloadSingle>Download</el-button>
+					<el-dropdown split-button type=primary @click=downloadAll @command=handleDownloadCommand v-if=lineAsQR>
+						Download
+						<el-dropdown-menu slot=dropdown>
+							<el-dropdown-item command=it>Download It</el-dropdown-item>
+							<el-dropdown-item command=all>Download All</el-dropdown-item>
+						</el-dropdown-menu>
+					</el-dropdown>
+					<el-button type=primary v-else @click=downloadSingle>Download</el-button>
+				</div>
+
+				<TextEditor
+					v-model=text
+					:line=editLine
+					@update:line="lineAsQR ? (editLine = viewLine = $event) : (editLine = $event)"
+					:mode="lineAsQR ? 'lineasqr' : 'singleqr'" />
 			</div>
-
-			<TextEditor
-				v-model=text
-				:line=editLine
-				@update:line="lineAsQR ? (editLine = viewLine = $event) : (editLine = $event)"
-				:mode="lineAsQR ? 'lineasqr' : 'singleqr'" />
 		</el-main>
 
 		<qr-downloader ref=downloader />

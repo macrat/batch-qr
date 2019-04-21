@@ -81,7 +81,7 @@ export default {
 		line(val) {
 			const doc = this.$refs.codemirror.codemirror.getDoc();
 			if (doc.getCursor().line !== val) {
-				doc.setCursor({line: val});
+				doc.setCursor({line: val}, undefined, {scroll: false});
 			}
 		},
 	},
