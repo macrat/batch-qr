@@ -5,7 +5,7 @@ QR batch generator.
 
 QRコードを沢山作るやつ。
 
-[![BatchQR](./batch-qr.svg)](https://macrat.github.io/batch-qr)
+[<img alt="BatchQR" src="./batch-qr.svg" width=320px height=320px>](https://macrat.github.io/batch-qr)
 
 [https://macrat.github.io/batch-qr](https://macrat.github.io/batch-qr)
 
