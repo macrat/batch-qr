@@ -136,6 +136,8 @@ main {
 </template>
 
 <script>
+import Vue from 'vue';
+
 import ColorPicker from '~/components/ColorPicker';
 import QrThumbnails from '~/components/QRThumbnails';
 import QrDownloader from '~/components/QRDownloader';
@@ -230,8 +232,13 @@ export default {
 			},
 			deep: true,
 		},
-		lineAsQR() {
+		lineAsQR(val) {
 			this.updateURL();
+			if (val) {
+				Vue.nextTick(() => {
+					this.viewLine = this.editLine;
+				});
+			}
 		},
 	},
 

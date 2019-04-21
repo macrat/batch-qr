@@ -56,6 +56,12 @@ export default {
 		current(val) {
 			this.$refs.swiper.swiper.slideTo(val);
 		},
+		data() {
+			const current = this.$refs.swiper.swiper.activeIndex;
+			if (this.current !== current) {
+				this.$emit('update:current', current);
+			}
+		},
 	},
 };
 </script>
