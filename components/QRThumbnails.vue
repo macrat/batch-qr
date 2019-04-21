@@ -1,5 +1,5 @@
 <style>
-.swiper-pagination-bullet-active {
+.swiper-pagination-bullet.swiper-pagination-bullet-active {
 	background-color: #592266;
 }
 </style>
