@@ -21,6 +21,19 @@ header > div {
 	justify-content: space-between;
 	align-items: center;
 }
+header .links {
+	display: flex;
+	align-items: center;
+}
+header .links > * {
+	margin-left: 10px;
+}
+header .links > *:last-child {
+	margin-left: 16px;
+}
+header .links i {
+	font-size: 26px;
+}
 header a {
 	color: #606060;
 	text-decoration: none;
@@ -71,9 +84,20 @@ main {
 			<div>
 				<a href="https://macrat.github.io/batch-qr"><h1>BatchQR</h1></a>
 
-				<el-tooltip content="open repository">
-					<a href="https://github.com/macrat/batch-qr"><img src="~assets/github.svg" width=32px height=32px></a>
-				</el-tooltip>
+				<div class=links>
+					<el-tooltip content="Share via Facebook">
+						<a :href=facebookURL target=_blank><i class="fab fa-facebook fa-2x" /></a>
+					</el-tooltip>
+					<el-tooltip content="Share via Twitter">
+						<a :href=twitterURL target=_blank><i class="fab fa-twitter-square fa-2x" /></a>
+					</el-tooltip>
+					<el-tooltip content="Share via LINE">
+						<a :href=lineURL target=_blank><i class="fab fa-line fa-2x" /></a>
+					</el-tooltip>
+					<el-tooltip content="open repository">
+						<a href="https://github.com/macrat/batch-qr"><img src="~assets/github.svg" width=32px height=32px></a>
+					</el-tooltip>
+				</div>
 			</div>
 		</el-header>
 
@@ -145,6 +169,7 @@ main {
 
 <script>
 import Vue from 'vue';
+import QueryString from 'querystring';
 
 import ColorPicker from '~/components/ColorPicker';
 import QrThumbnails from '~/components/QRThumbnails';
@@ -190,6 +215,28 @@ export default {
 				return [this.text];
 			}
 		},
+		urlQuery() {
+			return QueryString.stringify({
+				background: this.options.color.light,
+				foreground: this.options.color.dark,
+				margin: this.options.margin,
+				errorlevel: this.options.errorCorrectionLevel,
+				mode: this.lineAsQR ? 'line-as-qr' : 'single-qr',
+				text: this.text,
+			});
+		},
+		shareURL() {
+			return process.env.baseURL + this.$router.history.base + '?' + this.urlQuery;
+		},
+		facebookURL() {
+			return `https://facebook.com/sharer.php?u=${encodeURIComponent(this.shareURL)}`;
+		},
+		twitterURL() {
+			return `https://twitter.com/share?text=Create+QR+Code+via+BatchQR&url=${encodeURIComponent(this.shareURL)}`;
+		},
+		lineURL() {
+			return `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(this.shareURL)}`;
+		},
 	},
 
 	methods: {
@@ -216,19 +263,11 @@ export default {
 			}
 		},
 		updateURL() {
-			const query = new URLSearchParams();
-			query.append('background', this.options.color.light);
-			query.append('foreground', this.options.color.dark);
-			query.append('margin', this.options.margin);
-			query.append('errorlevel', this.options.errorCorrectionLevel);
-			query.append('mode', this.lineAsQR ? 'line-as-qr' : 'single-qr');
-			query.append('text', this.text);
-
-			if (query.toString() !== new URLSearchParams(location.search).toString()) {
+			if (this.urlQuery.toString() !== new URLSearchParams(location.search).toString()) {
 				if (history.state !== 'batch-qr') {
-					history.pushState('batch-qr', null, '?' + query);
+					history.pushState('batch-qr', null, '?' + this.urlQuery);
 				} else {
-					history.replaceState('batch-qr', null, '?' + query);
+					history.replaceState('batch-qr', null, '?' + this.urlQuery);
 				}
 			}
 		},
