@@ -226,9 +226,9 @@ export default {
 
 			if (query.toString() !== new URLSearchParams(location.search).toString()) {
 				if (history.state !== 'batch-qr') {
-					history.pushState('batch-qr', null, '/?' + query);
+					history.pushState('batch-qr', null, '?' + query);
 				} else {
-					history.replaceState('batch-qr', null, '/?' + query);
+					history.replaceState('batch-qr', null, '?' + query);
 				}
 			}
 		},
