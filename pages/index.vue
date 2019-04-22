@@ -167,7 +167,7 @@ export default {
 
 	data() {
 		return {
-			text: this.$route.query.text || 'hello world!\nthis is text',
+			text: this.$route.query.text || 'Please type text here!\nEach line will convert to QR code.',
 			options: {
 				color: {
 					light: this.$route.query.background || '#BC67D0FF',
@@ -256,7 +256,7 @@ export default {
 
 	mounted() {
 		window.addEventListener('popstate', () => {
-			this.text = this.$route.query.text || 'hello world!\nthis is text';
+			this.text = this.$route.query.text || 'Please type text here!\nEach line will convert to QR code.';
 			this.options = {
 				color: {
 					light: this.$route.query.background || '#BC67D0FF',
