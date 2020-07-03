@@ -1,10 +1,4 @@
-const baseURL = process.env.DEPLOY_ENV !== 'GH_PAGES' ? '' : 'https://macrat.github.io';
-const router = process.env.DEPLOY_ENV !== 'GH_PAGES' ? {} : {
-	base: '/batch-qr/',
-};
-
 export default {
-	env: {baseURL: baseURL},
 	head: {
 		title: 'BatchQR',
 		meta: [
@@ -22,5 +16,4 @@ export default {
 		{src: '~plugins/element-ui'},
 		{src: '~plugins/codemirror', ssr: false},
 	],
-	router: router,
 };
