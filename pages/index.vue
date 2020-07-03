@@ -82,7 +82,7 @@ main {
 	<el-container>
 		<el-header>
 			<div>
-				<a href="https://macrat.github.io/batch-qr"><h1>BatchQR</h1></a>
+				<a href="/"><h1>BatchQR</h1></a>
 
 				<div class=links>
 					<el-tooltip content="Share via Facebook">
