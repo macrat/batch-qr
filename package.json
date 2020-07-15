@@ -22,7 +22,7 @@
   "homepage": "https://github.com/macrat/batch-qr#readme",
   "dependencies": {
     "element-ui": "^2.13.2",
-    "js-base64": "^2.6.2",
+    "js-base64": "^3.0.0",
     "jszip": "^3.5.0",
     "node-sass": "^4.14.1",
     "nuxt": "^2.13.3",
