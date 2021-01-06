@@ -34,6 +34,6 @@
     "vue-codemirror": "^4.0.6"
   },
   "devDependencies": {
-    "cross-env": "7.0.2"
+    "cross-env": "7.0.3"
   }
 }
